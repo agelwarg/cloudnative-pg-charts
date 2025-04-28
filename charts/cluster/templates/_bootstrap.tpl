@@ -2,11 +2,7 @@
 {{- if eq .Values.mode "standalone" }}
 bootstrap:
   initdb:
-    {{- with .Values.cluster.initdb }}
-        {{- with (omit . "postInitApplicationSQL" "owner" "import") }}
-            {{- . | toYaml | nindent 4 }}
-        {{- end }}
-    {{- end }}
+    {{- tpl ( omit .Values.cluster.initdb "postInitApplicationSQL" "owner" "import" | toYaml ) . | nindent 4 }}
     {{- if .Values.cluster.initdb.owner }}
     owner: {{ tpl .Values.cluster.initdb.owner . }}
     {{- end }}
@@ -47,11 +43,7 @@ externalClusters:
 
 {{- else if eq .Values.recovery.method "import" }}
   initdb:
-    {{- with .Values.cluster.initdb }}
-        {{- with (omit . "owner" "import") }}
-            {{- . | toYaml | nindent 4 }}
-        {{- end }}
-    {{- end }}
+    {{- tpl ( omit .Values.cluster.initdb "owner" "import" | toYaml ) . | nindent 4 }}
     {{- if .Values.cluster.initdb.owner }}
     owner: {{ tpl .Values.cluster.initdb.owner . }}
     {{- end }}
